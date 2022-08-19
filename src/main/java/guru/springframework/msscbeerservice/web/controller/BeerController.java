@@ -1,6 +1,8 @@
 package guru.springframework.msscbeerservice.web.controller;
 
+import guru.springframework.msscbeerservice.service.BeerService;
 import guru.springframework.msscbeerservice.web.model.BeerDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,36 +15,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/beer")
 public class BeerController {
 
+    private final BeerService beerService;
+
     @GetMapping("/{beerId}")
     public ResponseEntity<BeerDto> getBeerById(@PathVariable UUID beerId){
-
-        // todo impl
-        return ResponseEntity.ok(BeerDto.builder().id(beerId).build());
+        return ResponseEntity.ok(beerService.getById(beerId));
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveNewBeer(@RequestBody @Validated BeerDto beerDto){
-        // todo impl
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<BeerDto> saveNewBeer(@RequestBody @Validated BeerDto beerDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(beerService.saveNewBeer(beerDto));
     }
 
     @PutMapping("/{beerId}")
-    public ResponseEntity<Void> updateBeerById(@PathVariable UUID beerId, @RequestBody @Validated BeerDto beerDto){
-
-        //todo impl
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<BeerDto> updateBeerById(@PathVariable UUID beerId, @RequestBody @Validated BeerDto beerDto){
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(beerService.updateBeer(beerId, beerDto));
     }
 
     @DeleteMapping("/{beerId}")
     public ResponseEntity<Void> deleteBeerById(@PathVariable UUID beerId) {
-        //todo impl
+        beerService.deleteBeer(beerId);
         return ResponseEntity.noContent().build();
     }
 
